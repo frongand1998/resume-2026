@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chirasin Chuenthed — Senior Software Engineer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root{
+    --bg: #0a0e0c;
+    --bg-panel: #10160f;
+    --line: #233029;
+    --green: #5ee687;
+    --green-dim: #2f5b40;
+    --amber: #e6b95e;
+    --red: #e65e5e;
+    --text: #d9e6df;
+    --text-dim: #7d9189;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.5;
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(94,230,135,0.05), transparent 40%),
+      radial-gradient(circle at 85% 60%, rgba(94,230,135,0.04), transparent 45%);
+  }
+  ::selection{background:var(--green); color:#06140a;}
+
+  .scanline{
+    position:fixed; inset:0; pointer-events:none; z-index:50;
+    background:repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px);
+    opacity:0.5;
+  }
+
+  .wrap{max-width:1080px; margin:0 auto; padding:0 28px;}
+
+  /* ---- top status bar ---- */
+  .statusbar{
+    border-bottom:1px solid var(--line);
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.04em;
+    color:var(--text-dim);
+    padding:10px 0;
+    position:sticky; top:0; z-index:40;
+    background:rgba(10,14,12,0.92);
+    backdrop-filter: blur(6px);
+  }
+  .statusbar .wrap{display:flex; justify-content:space-between; align-items:center;}
+  .statusbar .dot{
+    display:inline-block; width:6px; height:6px; border-radius:50%;
+    background:var(--green); margin-right:8px;
+    box-shadow:0 0 6px var(--green);
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.35;}}
+  .statusbar nav a{color:var(--text-dim); text-decoration:none; margin-left:22px; transition:color .15s;}
+  .statusbar nav a:hover{color:var(--green);}
+
+  /* ---- hero ---- */
+  .hero{padding:90px 0 70px; border-bottom:1px solid var(--line); position:relative;}
+  .hero .eyebrow{
+    font-family:var(--mono); font-size:12px; color:var(--green);
+    letter-spacing:0.12em; text-transform:uppercase; margin-bottom:22px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .hero .eyebrow::before{content:''; width:24px; height:1px; background:var(--green);}
+  .hero h1{
+    font-size:clamp(40px, 7vw, 78px);
+    font-weight:800;
+    letter-spacing:-0.02em;
+    line-height:1.02;
+    color:#f3f7f4;
+  }
+  .hero h1 .accent{color:var(--green);}
+  .hero .role{
+    font-family:var(--mono); font-size:15px; color:var(--text-dim);
+    margin-top:18px; max-width:560px;
+  }
+  .hero .role b{color:var(--text); font-weight:500;}
+  .hero .cta-row{display:flex; gap:14px; margin-top:36px; flex-wrap:wrap;}
+  .btn{
+    font-family:var(--mono); font-size:13px; padding:12px 20px;
+    border:1px solid var(--line); color:var(--text); text-decoration:none;
+    display:inline-flex; align-items:center; gap:8px; transition:all .15s;
+    background:var(--bg-panel);
+  }
+  .btn:hover{border-color:var(--green); color:var(--green);}
+  .btn.primary{background:var(--green); color:#06140a; border-color:var(--green); font-weight:700;}
+  .btn.primary:hover{background:#7af2a3;}
+
+  /* ---- live grid signature element ---- */
+  .live-grid{
+    margin-top:56px;
+    border:1px solid var(--line);
+    background:var(--bg-panel);
+  }
+  .live-grid .lg-head{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 16px; border-bottom:1px solid var(--line);
+    font-family:var(--mono); font-size:11px; color:var(--text-dim); letter-spacing:0.05em;
+  }
+  .lg-cells{display:grid; grid-template-columns:repeat(4,1fr);}
+  .lg-cell{
+    border-right:1px solid var(--line); border-bottom:1px solid var(--line);
+    padding:16px; font-family:var(--mono); position:relative;
+  }
+  .lg-cell:nth-child(4n){border-right:none;}
+  .lg-cell .label{font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.06em;}
+  .lg-cell .value{font-size:22px; font-weight:700; color:var(--text); margin-top:6px;}
+  .lg-cell .value.ok{color:var(--green);}
+  .lg-cell .bar{height:3px; background:var(--green-dim); margin-top:10px; position:relative; overflow:hidden;}
+  .lg-cell .bar span{position:absolute; left:0; top:0; bottom:0; background:var(--green);}
+
+  @media (max-width:680px){.lg-cells{grid-template-columns:repeat(2,1fr);} .lg-cell:nth-child(2n){border-right:none;} .lg-cell:nth-child(4n){border-right:1px solid var(--line);}}
+
+  /* ---- section common ---- */
+  section{padding:64px 0; border-bottom:1px solid var(--line);}
+  .sec-head{display:flex; align-items:baseline; gap:14px; margin-bottom:36px;}
+  .sec-head .idx{font-family:var(--mono); color:var(--green); font-size:13px;}
+  .sec-head h2{font-size:26px; font-weight:700; letter-spacing:-0.01em; color:#f3f7f4;}
+  .sec-head .rule{flex:1; height:1px; background:var(--line);}
+
+  /* ---- experience ---- */
+  .exp-item{display:grid; grid-template-columns:160px 1fr; gap:24px; padding:24px 0; border-top:1px solid var(--line);}
+  .exp-item:first-of-type{border-top:none;}
+  .exp-meta{font-family:var(--mono); font-size:12px; color:var(--text-dim);}
+  .exp-meta .status{display:inline-flex; align-items:center; gap:6px; color:var(--green); margin-top:8px;}
+  .exp-meta .status::before{content:''; width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow:0 0 5px var(--green);}
+  .exp-body h3{font-size:18px; font-weight:700; color:var(--text);}
+  .exp-body .co{font-family:var(--mono); font-size:13px; color:var(--green); margin-top:2px;}
+  .exp-body ul{margin-top:14px; padding-left:18px;}
+  .exp-body li{font-size:14.5px; color:#b9c8c0; margin-bottom:8px;}
+  .stack-tags{display:flex; flex-wrap:wrap; gap:8px; margin-top:16px;}
+  .tag{font-family:var(--mono); font-size:11px; padding:4px 9px; border:1px solid var(--line); color:var(--text-dim);}
+
+  /* ---- skills ---- */
+  .skill-cols{display:grid; grid-template-columns:repeat(3,1fr); gap:0; border:1px solid var(--line);}
+  .skill-col{padding:22px; border-right:1px solid var(--line);}
+  .skill-col:last-child{border-right:none;}
+  .skill-col h4{font-family:var(--mono); font-size:11px; color:var(--green); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:14px;}
+  .skill-col ul{list-style:none;}
+  .skill-col li{font-size:14px; color:#b9c8c0; padding:5px 0; display:flex; justify-content:space-between;}
+  .skill-col li::after{content:'●●●●●'; font-size:7px; letter-spacing:2px; color:var(--green-dim);}
+  @media (max-width:680px){.skill-cols{grid-template-columns:1fr;} .skill-col{border-right:none; border-bottom:1px solid var(--line);}}
+
+  /* ---- projects ---- */
+  .proj-grid{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line);}
+  .proj-card{background:var(--bg); padding:26px; transition:background .15s;}
+  .proj-card:hover{background:var(--bg-panel);}
+  .proj-card .ptag{font-family:var(--mono); font-size:10px; color:var(--amber); letter-spacing:0.08em; text-transform:uppercase;}
+  .proj-card h3{font-size:19px; font-weight:700; margin-top:8px; color:#f3f7f4;}
+  .proj-card p{font-size:13.5px; color:var(--text-dim); margin-top:10px;}
+  .proj-card .feats{margin-top:14px; display:flex; flex-wrap:wrap; gap:6px;}
+  .proj-card .feats span{font-family:var(--mono); font-size:10.5px; color:var(--text-dim); border:1px solid var(--line); padding:3px 7px;}
+  @media (max-width:680px){.proj-grid{grid-template-columns:1fr;}}
+
+  /* ---- education ---- */
+  .edu-row{display:flex; justify-content:space-between; padding:16px 0; border-top:1px solid var(--line); font-size:14.5px;}
+  .edu-row:first-of-type{border-top:none;}
+  .edu-row .school{font-weight:600; color:var(--text);}
+  .edu-row .meta{font-family:var(--mono); font-size:12px; color:var(--text-dim); text-align:right;}
+
+  /* ---- contact / footer ---- */
+  footer{padding:70px 0 50px;}
+  footer h2{font-size:clamp(30px,5vw,46px); font-weight:800; color:#f3f7f4; max-width:600px;}
+  footer .sub{font-family:var(--mono); font-size:13px; color:var(--text-dim); margin-top:14px;}
+  .contact-grid{display:flex; gap:14px; margin-top:32px; flex-wrap:wrap;}
+  .end-status{font-family:var(--mono); font-size:11px; color:var(--text-dim); margin-top:60px; display:flex; justify-content:space-between; border-top:1px solid var(--line); padding-top:18px;}
+
+  @media (max-width:680px){
+    .exp-item{grid-template-columns:1fr;}
+    .statusbar nav{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="scanline"></div>
+
+<div class="statusbar">
+  <div class="wrap">
+    <span><span class="dot"></span>SYSTEM ONLINE — BANGKOK, TH</span>
+    <nav>
+      <a href="#experience">experience</a>
+      <a href="#projects">projects</a>
+      <a href="#skills">skills</a>
+      <a href="#contact">contact</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">frongand1998 // senior software engineer</div>
+    <h1>Chirasin<br>Chuent<span class="accent">h</span>ed</h1>
+    <p class="role">Building <b>enterprise systems that don't go down</b> — warehouse logistics, workforce platforms, and real-time security operations centers monitoring live CCTV, incident response, and IoT device fleets across Bangkok.</p>
+    <div class="cta-row">
+      <a href="#projects" class="btn primary">View system logs ↓</a>
+      <a href="mailto:frongand1998@gmail.com" class="btn">frongand1998@gmail.com</a>
+      <a href="https://github.com/frongand1998" target="_blank" class="btn">github.com/frongand1998</a>
+    </div>
+
+    <div class="live-grid">
+      <div class="lg-head">
+        <span>// CAREER_METRICS.LOG</span>
+        <span>LAST_UPDATE: 2026</span>
+      </div>
+      <div class="lg-cells">
+        <div class="lg-cell">
+          <div class="label">Years active</div>
+          <div class="value ok">5+</div>
+          <div class="bar"><span style="width:85%"></span></div>
+        </div>
+        <div class="lg-cell">
+          <div class="label">Systems shipped</div>
+          <div class="value ok">5</div>
+          <div class="bar"><span style="width:70%"></span></div>
+        </div>
+        <div class="lg-cell">
+          <div class="label">Cycle time cut</div>
+          <div class="value ok">30%</div>
+          <div class="bar"><span style="width:30%"></span></div>
+        </div>
+        <div class="lg-cell">
+          <div class="label">Status</div>
+          <div class="value ok">ACTIVE</div>
+          <div class="bar"><span style="width:100%"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="experience">
+  <div class="wrap">
+    <div class="sec-head"><span class="idx">01</span><h2>Experience</h2><span class="rule"></span></div>
+
+    <div class="exp-item">
+      <div class="exp-meta">
+        Jun 2021 — Now
+        <div class="status">Currently here</div>
+      </div>
+      <div class="exp-body">
+        <h3>Senior Software Engineer</h3>
+        <div class="co">SKY ICT Public Company Limited · Bangkok</div>
+        <ul>
+          <li>Led development of enterprise software across warehouse, workforce, facility, and security-operations systems, improving performance and user experience.</li>
+          <li>Optimized engineering processes, contributing to a 30% reduction in development cycle time.</li>
+          <li>Designed scalable architectures focused on maintainability and long-term sustainability.</li>
+          <li>Monitored production systems and led root-cause analysis on critical incidents to keep operations stable.</li>
+          <li>Mentored junior engineers on design principles, debugging, and professional growth — and ran code reviews to raise team-wide quality.</li>
+        </ul>
+        <div class="stack-tags">
+          <span class="tag">React.js</span><span class="tag">Node.js</span><span class="tag">REST APIs</span>
+          <span class="tag">TypeScript</span><span class="tag">Socket.IO</span><span class="tag">Git</span>
+          <span class="tag">Agile</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-meta">Jun — Jul 2020</div>
+      <div class="exp-body">
+        <h3>Internship Programmer</h3>
+        <div class="co">Intelligence Business (Thailand) Co., Ltd. · Bangkok</div>
+        <ul>
+          <li>Built and designed the company's LINE Official Account, plus a Dialogflow chatbot integrated into it.</li>
+          <li>Worked alongside a senior graphic designer to learn WordPress build conventions.</li>
+          <li>Traveled with the team to gather requirements directly from customers in the field.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-head"><span class="idx">02</span><h2>Systems shipped</h2><span class="rule"></span></div>
+    <div class="proj-grid">
+
+      <div class="proj-card">
+        <div class="ptag">ERP / Logistics</div>
+        <h3>CargoWork</h3>
+        <p>Warehouse management system digitizing airline cargo logistics for AOT Ground Aviation Services, built on OutSystems.</p>
+        <div class="feats"><span>requirements design</span><span>airline logistics</span><span>OutSystems</span></div>
+      </div>
+
+      <div class="proj-card">
+        <div class="ptag">Workforce</div>
+        <h3>MettForce</h3>
+        <p>Workforce management platform for field-team digitization — fast feedback loops between users and engineering on every release.</p>
+        <div class="feats"><span>workforce ops</span><span>rapid iteration</span></div>
+      </div>
+
+      <div class="proj-card">
+        <div class="ptag">Facility</div>
+        <h3>Vimarn</h3>
+        <p>Facility management system for Plan B Media, built around a WYSIWYG content editor for managing facility information.</p>
+        <div class="feats"><span>WYSIWYG editor</span><span>Plan B Media</span></div>
+      </div>
+
+      <div class="proj-card">
+        <div class="ptag">IoT / Government</div>
+        <h3>METTECO</h3>
+        <p>Digitization layer for MettForce registration, integrated directly with Thailand's Crime Suppression Division (CSD).</p>
+        <div class="feats"><span>gov't integration</span><span>digitization</span></div>
+      </div>
+
+      <div class="proj-card" style="grid-column:1/-1;">
+        <div class="ptag">Smart Building · Security Operations Center</div>
+        <h3>METTRIQ</h3>
+        <p>Real-time security operations center for clients including the Stock Exchange of Thailand — the largest system in this portfolio. Live CCTV monitoring with a rearrangeable custom grid, playback archive integration via Minio, incident confirmation workflows with email alerts, and device geolocation on map.</p>
+        <div class="feats">
+          <span>real-time CCTV grid</span><span>incident confirmation</span><span>playback archive</span>
+          <span>map-based device tracking</span><span>email alerting</span><span>SET / DAD clients</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-head"><span class="idx">03</span><h2>Stack</h2><span class="rule"></span></div>
+    <div class="skill-cols">
+      <div class="skill-col">
+        <h4>Frontend</h4>
+        <ul>
+          <li>React.js</li><li>Next.js</li><li>JavaScript (ES6+)</li>
+          <li>TypeScript</li><li>HTML5 / CSS3</li><li>MUI</li><li>React Leaflet</li>
+        </ul>
+      </div>
+      <div class="skill-col">
+        <h4>Backend &amp; infra</h4>
+        <ul>
+          <li>Node.js</li><li>REST APIs</li><li>PostgreSQL</li>
+          <li>Socket.IO</li><li>Vercel</li><li>Git</li>
+        </ul>
+      </div>
+      <div class="skill-col">
+        <h4>Practice</h4>
+        <ul>
+          <li>System design</li><li>Agile development</li><li>Code review</li>
+          <li>Unit testing</li><li>Technical mentoring</li><li>Incident response</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="idx">04</span><h2>Education</h2><span class="rule"></span></div>
+    <div class="edu-row">
+      <span class="school">Srinakharinwirot University — B.Eng. Computer Engineering</span>
+      <span class="meta">2017 – 2021 · GPA 2.79</span>
+    </div>
+    <div class="edu-row">
+      <span class="school">Nawamintharachinutit Suankularb Wittayalai Pathumthani — Gifted Program</span>
+      <span class="meta">2011 – 2017 · GPA 3.78</span>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <h2>Let's build something that stays online.</h2>
+    <p class="sub">// open to senior engineering roles &amp; collaborations</p>
+    <div class="contact-grid">
+      <a href="mailto:frongand1998@gmail.com" class="btn primary">frongand1998@gmail.com</a>
+      <a href="tel:0617759598" class="btn">061-775-9598</a>
+      <a href="https://www.linkedin.com/in/chirasin-chuenthed92b9a6228/" target="_blank" class="btn">LinkedIn</a>
+      <a href="https://github.com/frongand1998" target="_blank" class="btn">GitHub</a>
+    </div>
+    <div class="end-status">
+      <span>© 2026 CHIRASIN CHUENTHED</span>
+      <span>LUMLUKKA, PATHUMTHANI, TH</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
